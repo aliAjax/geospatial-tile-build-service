@@ -3,11 +3,19 @@ package infrastructure
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/example/geospatial-tile-build-service/internal/dataset/domain"
 	"sync"
 )
 
 var ErrDatasetNotFound = errors.New("dataset not found")
+
+func IsDatasetNotFound(err error) bool {
+	if err == nil {
+		return false
+	}
+	return errors.Is(err, ErrDatasetNotFound)
+}
 
 type Memory struct {
 	mu       sync.RWMutex
@@ -32,7 +40,7 @@ func (m *Memory) GetDataset(_ context.Context, id string) (domain.Dataset, error
 	defer m.mu.RUnlock()
 	d, ok := m.datasets[id]
 	if !ok {
-		return d, ErrDatasetNotFound
+		return d, fmt.Errorf("dataset lookup: %v", ErrDatasetNotFound)
 	}
 	return d, nil
 }

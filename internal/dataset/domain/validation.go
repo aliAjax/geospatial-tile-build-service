@@ -1,10 +1,17 @@
 package domain
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strings"
 )
+
+var ErrInvalidLayer = errors.New("invalid dataset layer")
+
+func invalidLayer(message string) error {
+	return fmt.Errorf("%s: %v", message, ErrInvalidLayer)
+}
 
 var idPattern = regexp.MustCompile(`^[a-z][a-z0-9_-]{1,63}$`)
 
@@ -26,10 +33,10 @@ func ValidateLayers(layers []string) error {
 	for _, l := range layers {
 		l = strings.TrimSpace(l)
 		if l == "" {
-			return fmt.Errorf("empty layer")
+			return invalidLayer("empty layer")
 		}
 		if seen[l] {
-			return fmt.Errorf("duplicate layer %s", l)
+			return invalidLayer(fmt.Sprintf("duplicate layer %s", l))
 		}
 		seen[l] = true
 	}

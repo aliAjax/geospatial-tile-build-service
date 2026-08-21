@@ -20,6 +20,13 @@ type Service struct {
 	mu   sync.RWMutex
 }
 
+func WrapRepositoryError(err error) error {
+	if err == nil {
+		return nil
+	}
+	return fmt.Errorf("dataset repository: %v", err)
+}
+
 func New(repo Repository) *Service { return &Service{repo: repo} }
 func (s *Service) CreateDataset(ctx context.Context, d domain.Dataset) error {
 	if err := d.Validate(); err != nil {
@@ -55,5 +62,6 @@ func (s *Service) Publish(ctx context.Context, id string) (domain.Version, error
 	return v, nil
 }
 func (s *Service) List(ctx context.Context, dataset string) ([]domain.Version, error) {
-	return s.repo.ListVersions(ctx, dataset)
+	items, err := s.repo.ListVersions(ctx, dataset)
+	return items, WrapRepositoryError(err)
 }
