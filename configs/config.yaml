@@ -1,0 +1,4 @@
+http_addr: ":18114"
+data_dir: "./var/tiles"
+max_body: 8388608
+build_workers: 2

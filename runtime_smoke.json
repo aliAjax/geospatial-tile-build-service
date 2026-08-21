@@ -1,0 +1,8 @@
+{
+  "mode": "service",
+  "start": "go run ./cmd/server",
+  "ready_url": "http://127.0.0.1:18114/healthz",
+  "ready_status": 200,
+  "shutdown_signal": "SIGTERM",
+  "startup_timeout_seconds": 20
+}

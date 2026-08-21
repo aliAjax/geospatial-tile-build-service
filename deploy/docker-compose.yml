@@ -1,0 +1,7 @@
+services:
+  tile-service:
+    build: ..
+    ports:
+      - "18114:18114"
+    environment:
+      TILE_HTTP_ADDR: ":18114"
