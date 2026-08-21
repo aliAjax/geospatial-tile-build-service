@@ -23,6 +23,14 @@ func ParsePath(path string) (Coordinate, error) {
 	}
 	return t, nil
 }
+
+func ParseOptional(path string) (*Coordinate, error) {
+	if strings.TrimSpace(path) == "" {
+		return &Coordinate{}, nil
+	}
+	t, err := ParsePath(path)
+	return &t, err
+}
 func Parent(t Coordinate) Coordinate {
 	if t.Z == 0 {
 		return t

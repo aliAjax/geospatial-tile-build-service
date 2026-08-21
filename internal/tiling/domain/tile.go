@@ -8,6 +8,8 @@ import (
 
 type Coordinate struct{ Z, X, Y int }
 
+func ValidateOptional(t *Coordinate) error { return t.Validate() }
+
 func (t Coordinate) Validate() error {
 	if t.Z < 0 || t.Z > 22 {
 		return errors.New("zoom out of range")

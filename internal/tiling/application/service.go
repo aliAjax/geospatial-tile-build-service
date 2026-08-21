@@ -16,6 +16,8 @@ func (s *Service) Validate(ctx context.Context, t domain.Coordinate) error {
 	}
 	return t.Validate()
 }
+
+func (s *Service) EnumerateOptional(ctx context.Context, z *int) ([]domain.Coordinate, error) { return s.Enumerate(ctx,*z) }
 func (s *Service) Enumerate(ctx context.Context, z int) ([]domain.Coordinate, error) {
 	out := []domain.Coordinate{}
 	n := 1 << z
