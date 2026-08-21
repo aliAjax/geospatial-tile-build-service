@@ -3,6 +3,7 @@ package application
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	publication "github.com/example/geospatial-tile-build-service/internal/publication/domain"
 	"sort"
 	"strings"
 )
@@ -42,4 +43,8 @@ func DigestParts(parts ...string) string {
 		h.Write([]byte{0})
 	}
 	return hex.EncodeToString(h.Sum(nil))
+}
+
+func ReleaseStateDigest(r publication.Release) string {
+	return DigestParts(r.DatasetID, r.VersionID, r.Channel)
 }

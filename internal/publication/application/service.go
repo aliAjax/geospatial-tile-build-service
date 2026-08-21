@@ -27,12 +27,12 @@ func (s *Service) Publish(ctx context.Context, dataset, version, channel string)
 	defer s.mu.Unlock()
 	for k, r := range s.releases {
 		if r.DatasetID == dataset && r.Channel == channel {
-			r.Active = false
+			r = r.Retire()
 			s.releases[k] = r
 		}
 	}
-	r := domain.Release{DatasetID: dataset, VersionID: version, Channel: channel, Active: true, UpdatedAt: time.Now().UTC()}
-	s.releases[dataset+":"+channel] = r
+	r := domain.Release{DatasetID: dataset, VersionID: version, Channel: channel, UpdatedAt: time.Now().UTC()}.Activate()
+	s.releases[dataset] = r
 	return r, nil
 }
 func (s *Service) Current(_ context.Context, dataset, channel string) (domain.Release, error) {

@@ -2,10 +2,23 @@ package application
 
 import (
 	"context"
+	manifestapp "github.com/example/geospatial-tile-build-service/internal/manifest/application"
 	"github.com/example/geospatial-tile-build-service/internal/publication/domain"
 	"testing"
 	"time"
 )
+
+func TestReleaseStateDigestIncludesState(t *testing.T) {
+	active := domain.Release{DatasetID: "roads", VersionID: "v1", Channel: "stable", State: "active"}
+	retired := active
+	retired.State = "retired"
+	if manifestapp.ReleaseStateDigest(active) == manifestapp.ReleaseStateDigest(retired) {
+		t.Fatal("release state was omitted from digest")
+	}
+	if (domain.Release{DatasetID: "roads", VersionID: "v1", Channel: "stable", State: "corrupt"}).Valid() {
+		t.Fatal("invalid release state accepted")
+	}
+}
 
 func TestRetryPublicationReachesPublishedState(t *testing.T) {
 	s := New()
