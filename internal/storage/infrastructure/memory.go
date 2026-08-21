@@ -22,7 +22,13 @@ func New() *Memory {
 func (m *Memory) Put(_ context.Context, k string, b []byte) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	m.items[k] = append([]byte(nil), b...)
+	if current, ok := m.items[k]; ok && cap(current) >= len(b) {
+		current = current[:len(b)]
+		copy(current, b)
+		m.items[k] = current
+	} else {
+		m.items[k] = b
+	}
 	return nil
 }
 func (m *Memory) Open(_ context.Context, k string) (io.ReadCloser, error) {
@@ -32,7 +38,7 @@ func (m *Memory) Open(_ context.Context, k string) (io.ReadCloser, error) {
 	if !ok {
 		return nil, errors.New("object not found")
 	}
-	return io.NopCloser(bytes.NewReader(append([]byte(nil), b...))), nil
+	return io.NopCloser(bytes.NewReader(b)), nil
 }
 func (m *Memory) Delete(_ context.Context, k string) error {
 	m.mu.Lock()
