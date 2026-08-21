@@ -22,13 +22,16 @@ func New() *Memory {
 func (m *Memory) Put(_ context.Context, k string, b []byte) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if current, ok := m.items[k]; ok && cap(current) >= len(b) {
-		current = current[:len(b)]
-		copy(current, b)
-		m.items[k] = current
-	} else {
-		m.items[k] = b
-	}
+	// Always take an owned, immutable snapshot of the caller's bytes. A previous
+	// version reused the backing array on overwrite (copy into the existing
+	// slice) and exposed that same array through Open's reader. Under concurrent
+	// Put/Open on the same key, a reader observed a half-written buffer (data
+	// race) and build results drifted on partial input. A fresh allocation per
+	// write means each stored slice is never mutated again, so Open can safely
+	// hand out a reader over it without copying on every read.
+	snap := make([]byte, len(b))
+	copy(snap, b)
+	m.items[k] = snap
 	return nil
 }
 func (m *Memory) Open(_ context.Context, k string) (io.ReadCloser, error) {
@@ -38,6 +41,8 @@ func (m *Memory) Open(_ context.Context, k string) (io.ReadCloser, error) {
 	if !ok {
 		return nil, errors.New("object not found")
 	}
+	// b is an immutable snapshot (see Put), so it is safe to share with callers
+	// even while a later Put replaces m.items[k] with a different slice header.
 	return io.NopCloser(bytes.NewReader(b)), nil
 }
 func (m *Memory) Delete(_ context.Context, k string) error {

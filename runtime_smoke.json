@@ -1,6 +1,6 @@
 {
   "mode": "service",
-  "start": "CGO_ENABLED=1 go build -ldflags=-linkmode=external -o .runtime-bin ./cmd/server && ./.runtime-bin",
+  "start": "CGO_ENABLED=1 go build -ldflags=-linkmode=external -o /tmp/geospatial-tile-build-service-runtime ./cmd/server && /tmp/geospatial-tile-build-service-runtime",
   "ready_url": "http://127.0.0.1:18114/healthz",
   "ready_status": 200,
   "shutdown_signal": "SIGTERM",
