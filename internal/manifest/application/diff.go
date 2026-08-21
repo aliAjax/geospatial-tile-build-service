@@ -46,5 +46,5 @@ func DigestParts(parts ...string) string {
 }
 
 func ReleaseStateDigest(r publication.Release) string {
-	return DigestParts(r.DatasetID, r.VersionID, r.Channel)
+	return DigestParts(r.DatasetID, r.VersionID, r.Channel, r.State)
 }

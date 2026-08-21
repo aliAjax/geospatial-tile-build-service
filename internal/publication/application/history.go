@@ -34,7 +34,10 @@ func (h *History) Latest(dataset, channel string) (domain.Release, bool) {
 	var best domain.Release
 	found := false
 	for _, r := range h.items {
-		if r.DatasetID == dataset && r.Channel == channel && !found {
+		if r.DatasetID != dataset || r.Channel != channel {
+			continue
+		}
+		if !found || r.UpdatedAt.After(best.UpdatedAt) {
 			best = r
 			found = true
 		}
