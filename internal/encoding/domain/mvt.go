@@ -6,6 +6,15 @@ import (
 	"fmt"
 )
 
+var ErrTileEncode = fmt.Errorf("tile encode failed")
+
+func EncodeChecked(layer Layer) ([]byte, error) {
+	if layer.Name == "" {
+		return nil, fmt.Errorf("empty layer: %v", ErrTileEncode)
+	}
+	return Encode(layer), nil
+}
+
 type Layer struct {
 	Name     string
 	Features []Feature

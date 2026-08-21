@@ -1,9 +1,17 @@
 package domain
 
 import (
+	"fmt"
 	"sort"
 	"strconv"
 )
+
+func BuildTagsChecked(properties map[string]string) (TagTable, error) {
+	if properties == nil {
+		return TagTable{}, fmt.Errorf("properties missing: %v", ErrTileEncode)
+	}
+	return BuildTags(properties), nil
+}
 
 type TagTable struct {
 	Keys   []string
