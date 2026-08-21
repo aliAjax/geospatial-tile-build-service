@@ -18,25 +18,30 @@ func (f *Filter) Select(ctx context.Context, features []domain.Feature, allowed 
 		default:
 		}
 		if len(allowed) == 0 {
-			out = append(out, v)
+			out = append(out, v.Clone())
 			continue
 		}
-		for k := range v.Properties {
+		clone := v.Clone()
+		for k := range clone.Properties {
 			if _, ok := allowed[k]; !ok {
-				delete(v.Properties, k)
+				delete(clone.Properties, k)
 			}
 		}
-		out = append(out, v)
+		out = append(out, clone)
 	}
 	return out
 }
 func (f *Filter) NormalizeProperties(features []domain.Feature) []domain.Feature {
-	for i := range features {
-		p := map[string]any{}
-		for k, v := range features[i].Properties {
-			p[strings.TrimSpace(strings.ToLower(k))] = v
+	out := make([]domain.Feature, len(features))
+	for i, v := range features {
+		clone := v.Clone()
+		src := v.Properties
+		p := make(map[string]any, len(src))
+		for k, val := range src {
+			p[strings.TrimSpace(strings.ToLower(k))] = val
 		}
-		features[i].Properties = p
+		clone.Properties = p
+		out[i] = clone
 	}
-	return features
+	return out
 }

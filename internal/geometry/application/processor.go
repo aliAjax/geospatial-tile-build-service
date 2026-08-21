@@ -31,7 +31,13 @@ func (p *Processor) Validate(ctx context.Context, f domain.Feature) error {
 }
 func (p *Processor) Simplify(_ context.Context, f domain.Feature, tolerance float64) domain.Feature {
 	if tolerance <= 0 {
-		return f
+		return f.Clone()
 	}
-	return f
+	if line, ok := f.Geometry.(domain.LineString); ok {
+		simplified := DouglasPeucker(context.Background(), line, tolerance)
+		out := f.Clone()
+		out.Geometry = simplified
+		return out
+	}
+	return f.Clone()
 }

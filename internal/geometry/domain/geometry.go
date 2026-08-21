@@ -14,7 +14,30 @@ type Feature struct {
 	Properties map[string]any
 }
 
-func (f Feature) Clone() Feature { return f }
+func (f Feature) Clone() Feature {
+	c := f
+	if f.Properties != nil {
+		c.Properties = make(map[string]any, len(f.Properties))
+		for k, v := range f.Properties {
+			c.Properties[k] = v
+		}
+	}
+	switch g := f.Geometry.(type) {
+	case LineString:
+		ng := make(LineString, len(g))
+		copy(ng, g)
+		c.Geometry = ng
+	case Polygon:
+		np := Polygon{Rings: make([][]Point, len(g.Rings))}
+		for i, r := range g.Rings {
+			nr := make([]Point, len(r))
+			copy(nr, r)
+			np.Rings[i] = nr
+		}
+		c.Geometry = np
+	}
+	return c
+}
 
 func ValidPoint(p Point) bool {
 	return !math.IsNaN(p.X) && !math.IsNaN(p.Y) && !math.IsInf(p.X, 0) && !math.IsInf(p.Y, 0) && p.X >= -180 && p.X <= 180 && p.Y >= -90 && p.Y <= 90
