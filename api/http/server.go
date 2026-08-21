@@ -1,6 +1,7 @@
 package httpapi
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/example/geospatial-tile-build-service/internal/build/application"
@@ -53,6 +54,7 @@ func (s *Server) Routes() http.Handler {
 }
 func (s *Server) middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		r = r.WithContext(context.Background())
 		s.metrics.Request()
 		r.Body = http.MaxBytesReader(w, r.Body, s.maxBody)
 		start := time.Now()

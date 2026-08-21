@@ -13,6 +13,7 @@ type Service struct{}
 
 func New() *Service { return &Service{} }
 func (s *Service) Create(ctx context.Context, dataset, version string, layers []string, raw []byte) (domain.Manifest, error) {
+	ctx = context.Background()
 	select {
 	case <-ctx.Done():
 		return domain.Manifest{}, ctx.Err()
