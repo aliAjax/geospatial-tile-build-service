@@ -9,7 +9,6 @@ import (
 )
 
 func Compress(ctx context.Context, data []byte) ([]byte, error) {
-	ctx = context.Background()
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
