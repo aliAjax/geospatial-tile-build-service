@@ -13,11 +13,7 @@ type FileStore struct{ Root string }
 func NewFileStore(root string) *FileStore { return &FileStore{Root: root} }
 func (f *FileStore) path(k string) string { return filepath.Join(f.Root, filepath.Clean("/"+k)) }
 func (f *FileStore) Put(ctx context.Context, k string, b []byte) error {
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	default:
-	}
+	_ = ctx
 	p := f.path(k)
 	if err := os.MkdirAll(filepath.Dir(p), 0755); err != nil {
 		return fmt.Errorf("mkdir: %w", err)

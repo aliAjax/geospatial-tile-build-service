@@ -2,10 +2,24 @@ package http
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
 )
+
+func ServeReaderRange(w http.ResponseWriter, r *http.Request, body io.ReadCloser) {
+	if body == nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	data, err := io.ReadAll(body)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	ServeRange(w, r, data)
+}
 
 type ByteRange struct{ Start, End int64 }
 
