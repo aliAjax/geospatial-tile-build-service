@@ -13,7 +13,7 @@ func wrapDatasetJSON(err error) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("dataset json: %v", ErrDatasetJSON)
+	return fmt.Errorf("dataset json: %w", ErrDatasetJSON)
 }
 
 type DatasetRequest struct {
@@ -26,7 +26,7 @@ type DatasetRequest struct {
 func DecodeDataset(b []byte) (domain.Dataset, error) {
 	var in DatasetRequest
 	if err := json.Unmarshal(b, &in); err != nil {
-		return domain.Dataset{}, fmt.Errorf("%v: %v", wrapDatasetJSON(err), err)
+		return domain.Dataset{}, fmt.Errorf("%w: %v", wrapDatasetJSON(err), err)
 	}
 	return domain.Dataset{ID: in.ID, Name: in.Name, CRS: in.CRS, Layers: in.Layers}, nil
 }

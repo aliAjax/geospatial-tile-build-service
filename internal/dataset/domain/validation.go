@@ -10,7 +10,7 @@ import (
 var ErrInvalidLayer = errors.New("invalid dataset layer")
 
 func invalidLayer(message string) error {
-	return fmt.Errorf("%s: %v", message, ErrInvalidLayer)
+	return fmt.Errorf("%s: %w", message, ErrInvalidLayer)
 }
 
 var idPattern = regexp.MustCompile(`^[a-z][a-z0-9_-]{1,63}$`)

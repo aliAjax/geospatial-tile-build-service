@@ -40,7 +40,7 @@ func (m *Memory) GetDataset(_ context.Context, id string) (domain.Dataset, error
 	defer m.mu.RUnlock()
 	d, ok := m.datasets[id]
 	if !ok {
-		return d, fmt.Errorf("dataset lookup: %v", ErrDatasetNotFound)
+		return d, fmt.Errorf("dataset lookup: %w", ErrDatasetNotFound)
 	}
 	return d, nil
 }

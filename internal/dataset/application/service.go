@@ -24,7 +24,7 @@ func WrapRepositoryError(err error) error {
 	if err == nil {
 		return nil
 	}
-	return fmt.Errorf("dataset repository: %v", err)
+	return fmt.Errorf("dataset repository: %w", err)
 }
 
 func New(repo Repository) *Service { return &Service{repo: repo} }
