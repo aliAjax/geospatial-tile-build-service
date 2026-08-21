@@ -14,6 +14,8 @@ type Feature struct {
 	Properties map[string]any
 }
 
+func (f Feature) Clone() Feature { return f }
+
 func ValidPoint(p Point) bool {
 	return !math.IsNaN(p.X) && !math.IsNaN(p.Y) && !math.IsInf(p.X, 0) && !math.IsInf(p.Y, 0) && p.X >= -180 && p.X <= 180 && p.Y >= -90 && p.Y <= 90
 }

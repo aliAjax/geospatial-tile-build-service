@@ -21,13 +21,11 @@ func (f *Filter) Select(ctx context.Context, features []domain.Feature, allowed 
 			out = append(out, v)
 			continue
 		}
-		next := map[string]any{}
-		for k, val := range v.Properties {
-			if _, ok := allowed[k]; ok {
-				next[k] = val
+		for k := range v.Properties {
+			if _, ok := allowed[k]; !ok {
+				delete(v.Properties, k)
 			}
 		}
-		v.Properties = next
 		out = append(out, v)
 	}
 	return out

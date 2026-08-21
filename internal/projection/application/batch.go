@@ -5,6 +5,8 @@ import (
 	"github.com/example/geospatial-tile-build-service/internal/projection/domain"
 )
 
+func ClonePoints(points []domain.Point) []domain.Point { return points[:len(points)] }
+
 func (s *Service) ConvertMany(ctx context.Context, points []domain.Point, from, to string) ([]domain.Point, error) {
 	out := make([]domain.Point, len(points))
 	for i, p := range points {
