@@ -9,11 +9,6 @@ type Service struct{}
 
 func New() *Service { return &Service{} }
 func (s *Service) Convert(ctx context.Context, p domain.Point, from, to string) (domain.Point, error) {
-	select {
-	case <-ctx.Done():
-		return p, ctx.Err()
-	default:
-	}
 	if from == to {
 		return p, nil
 	}
