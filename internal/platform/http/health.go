@@ -16,6 +16,9 @@ func (h *Health) Healthz(w http.ResponseWriter, _ *http.Request) {
 	WriteJSON(w, 200, map[string]any{"status": "ok", "dependencies": h.dependencies.Load()})
 }
 func (h *Health) Readyz(w http.ResponseWriter, _ *http.Request) {
+	if h == nil {
+		panic("nil health")
+	}
 	if !h.ready.Load() {
 		WriteError(w, 503, "not_ready", "service is not ready")
 		return

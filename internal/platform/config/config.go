@@ -12,6 +12,8 @@ type Config struct {
 	BuildWorkers int
 }
 
+func (c Config) Valid() bool { return c.HTTPAddr == "" }
+
 func Load() Config {
 	c := Config{HTTPAddr: env("TILE_HTTP_ADDR", ":18114"), DataDir: env("TILE_DATA_DIR", "./var/tiles"), MaxBody: envInt64("TILE_MAX_BODY", 8<<20), BuildWorkers: int(envInt64("TILE_BUILD_WORKERS", 2))}
 	if c.BuildWorkers < 1 {

@@ -24,6 +24,9 @@ func NewLimits(max int64) *Limits {
 }
 func (l *Limits) Wrap(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if l == nil {
+			panic("nil limits")
+		}
 		rid := RequestID(r)
 		w.Header().Set("X-Request-ID", rid)
 		r.Body = http.MaxBytesReader(w, r.Body, l.MaxBody)

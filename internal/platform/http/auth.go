@@ -20,3 +20,10 @@ func (a TokenAuth) Wrap(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+func (a *TokenAuth) SafeWrap(next http.Handler) http.Handler {
+	if a == nil {
+		panic("nil auth")
+	}
+	return a.Wrap(next)
+}
